@@ -1,15 +1,19 @@
 import { StarRating, Button } from "shared/components";
-
 import { getAvgRating } from "movies/MovieModel";
-import { getInitialMovies } from "data/initial";
+import { Movie } from "movies/MovieModel";
+import { useState } from "react";
 
-const movie = getInitialMovies()[0];
+export const MovieCard = (props:any) => {
+  const [deleted, setDeleted] = useState(false)
 
-export const MovieCard = () => {
+  const movie: Movie = props.movie
   const movieRating = getAvgRating(movie);
 
   return (
-    <div data-testid={`movie-item-${movie.id}`}>
+    <>
+    {!deleted && (
+      (
+        <div data-testid={`movie-item-${movie.id}`}>
       <img className="card-img-top" src={movie.imageUrl} alt="" />
       <div className="card-body">
         <h4 className="card-title">{movie.title}</h4>
@@ -17,8 +21,7 @@ export const MovieCard = () => {
         <p className="text-justify" style={{ fontSize: "14px" }}>
           {movie.description}
         </p>
-        {/* TODO: Implement delete functionality */}
-        <Button>Delete</Button>
+        <Button onClick={() => props.removeMovie(props.index)}>Delete</Button>
       </div>
       <div className="card-footer">
         <div className="clearfix">
@@ -35,5 +38,8 @@ export const MovieCard = () => {
         </div>
       </div>
     </div>
-  );
+      )
+    )}    
+  </>
+  )
 };
