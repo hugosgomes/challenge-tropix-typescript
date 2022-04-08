@@ -1,3 +1,4 @@
+import { useRef, useState } from "react";
 import { MovieCard } from "./MovieCard";
 import { AddMovieButton } from "./AddMovieButton";
 import { AddMovieForm } from "./AddMovieForm";
@@ -5,29 +6,48 @@ import { Card } from "shared/components";
 import { getInitialMovies } from "data/initial";
 import { Movie } from "movies/MovieModel";
 
-const movies: Movie[] = getInitialMovies();
 
 export const MovieList = () => {
+  const [showAddMovieForm, setShowAddMovieForm] = useState<boolean>(false)
+  const [count, setCount] = useState(0)
+
+  const movies = useRef(getInitialMovies())
 
   const removeMovie = (index: number) => {
-    movies.splice(index);
-    console.log("Delete Movie", movies)
+    movies.current.splice(index, 1)
+    setCount(count + 1)
+  }
+
+  const addMovie = (movie: Movie) => {
+    movies.current.push(movie)
+    setCount(count + 1)
+  }
+
+  const handleShowAddMovieForm = (value: React.SetStateAction<boolean>) => {
+    setShowAddMovieForm(value)
   }
 
   return (
     <div className="card-deck">
-      {movies.map((movie, index) => (
-        <Card>
+      {movies.current.map((movie, index) => (
+        <Card key={index}>
           <MovieCard movie={movie} removeMovie={removeMovie} index={index}/>
         </Card>
       ))}
-      {/* TODO: implement a toggle - show either a button or (after clicked) the form */}
-      <Card>
-        <AddMovieButton />
-      </Card>
-      <Card>
-        <AddMovieForm />
-      </Card>
+      {
+        !showAddMovieForm ?
+        (
+          <Card>
+            <AddMovieButton setShowAddMovieForm={() => handleShowAddMovieForm(true)}/>
+          </Card>
+        )
+        :
+        (
+          <Card>
+            <AddMovieForm setShowAddMovieForm={() => handleShowAddMovieForm(false)} addMovie={addMovie}/>
+          </Card>
+        )
+      }
     </div>
   );
 };

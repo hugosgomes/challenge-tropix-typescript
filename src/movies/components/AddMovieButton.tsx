@@ -1,4 +1,9 @@
-export function AddMovieButton() {
+interface AddMovieButtonProps {
+  setShowAddMovieForm?: any;
+}
+
+export function AddMovieButton(props: AddMovieButtonProps) {
+  const { setShowAddMovieForm } = props;
   return (
     <div
       style={{
@@ -7,9 +12,13 @@ export function AddMovieButton() {
         paddingBottom: "7rem",
         textAlign: "center",
       }}
+      onClick={() => {
+        if (!setShowAddMovieForm) return;
+        setShowAddMovieForm();
+      }}
     >
       <div style={{ fontSize: "8rem" }}>+</div>
-      <div className="button-label">Add movie</div>
+      <div className="button-label" >Add movie</div>
     </div>
   );
 }

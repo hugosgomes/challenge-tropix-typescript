@@ -3,15 +3,24 @@ import { getAvgRating } from "movies/MovieModel";
 import { Movie } from "movies/MovieModel";
 import { useState } from "react";
 
-export const MovieCard = (props:any) => {
-  const [deleted, setDeleted] = useState(false)
+interface MovieCardProps {
+  movie: Movie;
+  removeMovie?: any;
+  index: number;
+}
 
-  const movie: Movie = props.movie
+export const MovieCard = (props:MovieCardProps) => {
+  const [count, setcount] = useState(0)
+
+  const { movie, removeMovie, index }  = props
   const movieRating = getAvgRating(movie);
 
+  const handleMovieRating = (rating: number) => {
+    movie.ratings.push(rating)
+    setcount(count + 1)
+  }
+
   return (
-    <>
-    {!deleted && (
       (
         <div data-testid={`movie-item-${movie.id}`}>
       <img className="card-img-top" src={movie.imageUrl} alt="" />
@@ -21,13 +30,13 @@ export const MovieCard = (props:any) => {
         <p className="text-justify" style={{ fontSize: "14px" }}>
           {movie.description}
         </p>
-        <Button onClick={() => props.removeMovie(props.index)}>Delete</Button>
+        <Button onClick={() => removeMovie(index)}>Delete</Button>
       </div>
       <div className="card-footer">
         <div className="clearfix">
           <div className="float-left mt-1">
             {/* TODO: Implement rating functionality */}
-            <StarRating rating={movieRating} onRate={() => console.error('rating not implemented yet')} />
+            <StarRating rating={movieRating} onRate={handleMovieRating} />
           </div>
           <div
             data-testid="movie-rating"
@@ -39,7 +48,5 @@ export const MovieCard = (props:any) => {
       </div>
     </div>
       )
-    )}    
-  </>
-  )
+    )
 };
